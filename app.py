@@ -97,9 +97,12 @@ app.config.update(
 # Database configuration
 database_url = os.environ.get('DATABASE_URL')
 if not database_url:
-    # Fallback to SQLite for development
-    database_url = 'sqlite:///cv_optimizer.db'
-    logger.warning("Using SQLite database for development")
+    # Fallback to SQLite for development - use absolute path for Replit
+    import tempfile
+    db_dir = os.path.join(os.getcwd(), 'database')
+    os.makedirs(db_dir, exist_ok=True)
+    database_url = f'sqlite:///{os.path.join(db_dir, "cv_optimizer.db")}'
+    logger.warning(f"Using SQLite database: {database_url}")
 
 # Fix for PostgreSQL URL compatibility
 if database_url.startswith('postgres://'):
