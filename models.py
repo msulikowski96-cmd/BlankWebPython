@@ -19,13 +19,25 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
     login_count = db.Column(db.Integer, default=0)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    active = db.Column(db.Boolean, default=True, nullable=False)
     premium_until = db.Column(db.DateTime)
     stripe_customer_id = db.Column(db.String(100))
     stripe_session_id = db.Column(db.String(200))
     
     # Relationships
     cv_uploads = db.relationship('CVUpload', backref='user', lazy=True, cascade='all, delete-orphan')
+    
+    def __init__(self, username=None, email=None, first_name=None, last_name=None, **kwargs):
+        """Initialize User with keyword arguments"""
+        super().__init__(**kwargs)
+        if username:
+            self.username = username
+        if email:
+            self.email = email
+        if first_name:
+            self.first_name = first_name
+        if last_name:
+            self.last_name = last_name
     
     def set_password(self, password):
         """Set password hash"""
@@ -64,6 +76,11 @@ class User(UserMixin, db.Model):
     def is_developer(self):
         """Check if user is developer"""
         return self.username == 'developer'
+    
+    @property
+    def is_active(self):
+        """Override UserMixin is_active property"""
+        return self.active
     
     def to_dict(self):
         """Convert user to dictionary"""

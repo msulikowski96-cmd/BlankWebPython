@@ -375,7 +375,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        username_or_email = form.username_or_email.data.strip()
+        username_or_email = form.username_or_email.data.strip() if form.username_or_email.data else ''
         password = form.password.data
 
         print(f"🔍 Login attempt: {username_or_email}")
@@ -428,10 +428,12 @@ def register():
     if form.validate_on_submit():
         try:
             # Create new user
-            user = User(username=form.username.data,
-                        email=form.email.data.lower(),
-                        first_name=form.first_name.data,
-                        last_name=form.last_name.data)
+            user = User(
+                username=form.username.data,
+                email=form.email.data.lower() if form.email.data else '',
+                first_name=form.first_name.data,
+                last_name=form.last_name.data
+            )
             user.set_password(form.password.data)
 
             db.session.add(user)

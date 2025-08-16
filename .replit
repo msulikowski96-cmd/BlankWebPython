@@ -1,5 +1,8 @@
 modules = ["python-3.11"]
 
+[nix]
+packages = ["cargo", "freetype", "glibcLocales", "libiconv", "libxcrypt", "openssl", "pkg-config", "rustc"]
+
 [[ports]]
 localPort = 5000
 externalPort = 80
