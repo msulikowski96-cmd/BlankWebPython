@@ -4,6 +4,10 @@ import logging
 import requests
 import urllib.parse
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 

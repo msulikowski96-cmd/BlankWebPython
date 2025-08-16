@@ -110,9 +110,10 @@ CV Optimizer Pro is an AI-powered resume optimization platform built with Flask 
 - **Heroku**: Alternative cloud platform deployment
 
 ### Environment Configuration
-- Environment-specific configuration files (.env.example)
+- Environment variables loaded from .env file using python-dotenv
+- Template .env.example file for easy deployment setup
 - Automatic PostgreSQL URL format conversion
-- Secure API key management
+- Secure API key management with local .env file support
 - Production-ready settings with debug controls
 
 ### PWA Deployment
@@ -128,6 +129,10 @@ CV Optimizer Pro is an AI-powered resume optimization platform built with Flask 
 - User activity tracking and analytics
 
 ## Recent Changes
+- August 16, 2025: Configured API keys to load from .env file using python-dotenv
+- August 16, 2025: Fixed AI model hallucinations - added strict prompts to prevent adding false information to CVs
+- August 16, 2025: Lowered AI temperature to 0.3 for more conservative CV optimization responses
+- August 16, 2025: Created .env.example template file for easier deployment
 - June 24, 2025: Fixed database connection issues by creating new Replit PostgreSQL database
 - June 24, 2025: Updated database configuration to use built-in Replit database instead of external Neon service
 - June 24, 2025: Initialized database tables and created developer account
