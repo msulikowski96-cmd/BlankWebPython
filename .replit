@@ -5,4 +5,16 @@ packages = ["cargo", "freetype", "glibcLocales", "libiconv", "libxcrypt", "opens
 
 [[ports]]
 localPort = 5000
-externalPort = 80
+externalPort = 3000
+
+[workflows]
+runButton = "CV Optimizer Pro"
+
+[[workflows.workflow]]
+name = "CV Optimizer Pro"
+author = 46476139
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
