@@ -1,44 +1,94 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section - Mobile Optimized -->
-<div class="row mb-4" id="upload-section">
-    <div class="col-12">
-        <div class="card bg-dark hero-section">
-            <div class="card-body text-center py-4 py-md-5">
+<!-- Hero Section - Enhanced Visual Design -->
+<div class="hero-section mb-5">
+    <div class="container-fluid">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="hero-content">
-                    <div class="hero-icon mb-3">
-                        <i class="fas fa-brain"></i>
+                    <div class="hero-badge mb-3">
+                        <i class="fas fa-brain me-2"></i>
+                        <span>Powered by AI</span>
                     </div>
-                    <h1 class="hero-title mb-3">CV Optimizer Pro</h1>
-                    <p class="hero-subtitle mb-3">Zmień swoje CV w potężne narzędzie kariery dzięki sztucznej inteligencji</p>
-                    <p class="hero-description mb-3 d-none d-md-block">
+                    <h1 class="hero-title display-3 fw-bold mb-4">
+                        CV Optimizer <span class="text-gradient">Pro</span>
+                    </h1>
+                    <p class="hero-subtitle fs-4 mb-4">
+                        Zmień swoje CV w potężne narzędzie kariery dzięki sztucznej inteligencji
+                    </p>
+                    <p class="hero-description fs-5 mb-4 text-muted">
                         Przesyłaj swoje CV i wybieraj spośród zaawansowanych opcji optymalizacji, 
                         aby zwiększyć swoje szanse na zdobycie wymarzonej pracy.
                     </p>
-
-                    <div class="pricing-highlight">
-                        <div class="pricing-card">
-                            <div class="pricing-icon">
-                                <i class="fas fa-rocket"></i>
-                            </div>
-                            <div class="pricing-content">
-                                <h4 class="pricing-title">Profesjonalna analiza AI</h4>
-                                <div class="pricing-amount">
-                                    <span class="currency">PLN</span>
-                                    <span class="price">9,99</span>
-                                </div>
-                                <div class="pricing-features">
-                                    <span class="feature-item">✨ Analiza CV przez AI</span>
-                                    <span class="feature-item">🎯 Optymalizacja pod stanowisko</span>
-                                    <span class="feature-item d-none d-sm-inline">📊 Ocena i rekomendacje</span>
-                                    <span class="feature-item d-none d-sm-inline">💼 List motywacyjny</span>
-                                </div>
-                                <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg pricing-cta w-100">
-                                    <i class="fas fa-credit-card me-2"></i>Zapłać i optymalizuj CV
-                                </a>
+                    
+                    <!-- Stats Section -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-4">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">5,000+</div>
+                                <div class="stat-label">Zoptymalizowanych CV</div>
                             </div>
                         </div>
+                        <div class="col-4">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">70%</div>
+                                <div class="stat-label">Zwiększona szansa na rozmowę</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">4.9★</div>
+                                <div class="stat-label">Średnia ocena</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-cta">
+                        <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-lg me-3 px-4 py-3">
+                            <i class="fas fa-rocket me-2"></i>Rozpocznij optymalizację
+                        </a>
+                        <a href="#features" class="btn btn-outline-light btn-lg px-4 py-3">
+                            <i class="fas fa-info-circle me-2"></i>Dowiedz się więcej
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <div class="pricing-card-modern">
+                        <div class="pricing-header">
+                            <div class="pricing-icon-modern">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h4 class="pricing-title-modern">Profesjonalna analiza AI</h4>
+                            <div class="pricing-amount-modern">
+                                <span class="currency">PLN</span>
+                                <span class="price">9,99</span>
+                            </div>
+                        </div>
+                        <div class="pricing-features-modern">
+                            <div class="feature-item-modern">
+                                <i class="fas fa-check text-success"></i>
+                                <span>Analiza CV przez AI</span>
+                            </div>
+                            <div class="feature-item-modern">
+                                <i class="fas fa-check text-success"></i>
+                                <span>Optymalizacja pod stanowisko</span>
+                            </div>
+                            <div class="feature-item-modern">
+                                <i class="fas fa-check text-success"></i>
+                                <span>Ocena i rekomendacje</span>
+                            </div>
+                            <div class="feature-item-modern">
+                                <i class="fas fa-check text-success"></i>
+                                <span>List motywacyjny</span>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('checkout') }}" class="btn btn-gradient w-100 py-3 fw-bold">
+                            <i class="fas fa-credit-card me-2"></i>Zapłać i optymalizuj CV
+                        </a>
                     </div>
                 </div>
             </div>
@@ -47,40 +97,57 @@
 </div>
 
 <!-- Features Overview -->
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="features-grid">
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-upload"></i>
+<section id="features" class="features-section py-5 mb-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Jak to działa?</h2>
+            <p class="lead text-muted">Trzy proste kroki do idealnego CV</p>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card-modern">
+                    <div class="feature-number">1</div>
+                    <div class="feature-icon-modern">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h5 class="feature-title">Prześlij CV</h5>
+                    <p class="feature-description">Bezpiecznie prześlij swoje CV w formacie PDF</p>
                 </div>
-                <h5>Łatwe przesyłanie</h5>
-                <p>Prześlij CV w formacie PDF</p>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-brain"></i>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card-modern">
+                    <div class="feature-number">2</div>
+                    <div class="feature-icon-modern">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h5 class="feature-title">Analiza AI</h5>
+                    <p class="feature-description">Zaawansowana analiza przez sztuczną inteligencję</p>
                 </div>
-                <h5>Analiza AI</h5>
-                <p>Zaawansowana analiza przez sztuczną inteligencję</p>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-target"></i>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card-modern">
+                    <div class="feature-number">3</div>
+                    <div class="feature-icon-modern">
+                        <i class="fas fa-target"></i>
+                    </div>
+                    <h5 class="feature-title">Optymalizacja</h5>
+                    <p class="feature-description">Dostosowanie do konkretnego stanowiska</p>
                 </div>
-                <h5>Optymalizacja</h5>
-                <p>Dostosowanie do konkretnego stanowiska</p>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card-modern">
+                    <div class="feature-number">4</div>
+                    <div class="feature-icon-modern">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h5 class="feature-title">Pobierz wyniki</h5>
+                    <p class="feature-description">Otrzymaj zoptymalizowane CV i analizy</p>
                 </div>
-                <h5>Analiza wyników</h5>
-                <p>Szczegółowe raporty i rekomendacje</p>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 {% if not current_user.is_authenticated %}
 <div class="row mb-4">
@@ -144,9 +211,17 @@
     </div>
 </div>
 
-<div class="row">
-    <!-- Left Column: Upload and Job Input -->
-    <div class="col-lg-5 mb-4">
+<!-- Main Application Section -->
+<div class="main-app-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold mb-3">Zacznij optymalizację swojego CV</h2>
+            <p class="lead text-muted">Prześlij swoje CV i wybierz opcję optymalizacji</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Upload and Job Input -->
+            <div class="col-lg-5 mb-4">
         <!-- CV upload section -->
         <div class="card cv-processing-card mb-4">
             <div class="card-header bg-primary text-white">
@@ -415,6 +490,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>
