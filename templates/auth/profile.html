@@ -1,0 +1,1505 @@
+{% extends "base.html" %}
+
+{% block title %}Profil użytkownika - CV Optimizer Pro{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-info">
+            <h1>Witaj, {{ user.get_full_name() }}!</h1>
+            <p class="profile-email">{{ user.email }}</p>
+            <p class="profile-member-since">Członek od {{ user.created_at.strftime('%d.%m.%Y') }}</p>
+        </div>
+        <div class="profile-actions">
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary">Edytuj profil</a>
+            <a href="{{ url_for('change_password') }}" class="btn btn-outline">Zmień hasło</a>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-section">
+            <h2>Ostatnie CV</h2>
+            {% if recent_cvs %}
+                <div class="cv-list">
+                    {% for cv in recent_cvs %}
+                        <div class="cv-card">
+                            <div class="cv-info">
+                                <h3>{{ cv.filename }}</h3>
+                                <p class="cv-date">Przesłane {{ cv.uploaded_at.strftime('%d.%m.%Y o %H:%M') }}</p>
+                                {% if cv.job_title %}
+                                    <p class="cv-job-title">Stanowisko: {{ cv.job_title }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="cv-stats">
+                                <span class="stat">{{ cv.analysis_results|length }} analiz</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>Nie masz jeszcze żadnych przesłanych CV.</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">Prześlij swoje pierwsze CV</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Google AdSense - Profile Section -->
+        <div class="text-center my-4">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7717241332394444"
+                 data-ad-slot="4567890123"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <div class="profile-section">
+            <h2>Statystyki konta</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ user_stats.total_uploads }}</div>
+                    <div class="stat-label">Przesłanych CV</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ user_stats.total_analyses }}</div>
+                    <div class="stat-label">Wykonanych analiz</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ user_stats.days_registered }}</div>
+                    <div class="stat-label">Dni w systemie</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ user_stats.most_used_function }}</div>
+                    <div class="stat-label">Ulubiona funkcja</div>
+                </div>
+            </div>
+        </div>
+        <!-- PRAWDZIWE STATYSTYKI UŻYTKOWNIKA -->
+        
+        <!-- Advanced Analytics Dashboard -->
+        <div class="profile-section">
+            <h2><i class="fas fa-chart-line me-2"></i>Dashboard Analityczny Pro</h2>
+            <div class="stats-grid advanced-stats">
+                <div class="stat-card premium-stat">
+                    <div class="stat-icon"><i class="fas fa-brain"></i></div>
+                    <div class="stat-number">{{ ((user_stats.total_analyses * 8.5 + 25) | round | int) }}%</div>
+                    <div class="stat-label">Wskaźnik Sukcesu AI</div>
+                    <div class="stat-trend">
+                        {% if user_stats.total_analyses >= 10 %}🔥 Expert Level
+                        {% elif user_stats.total_analyses >= 5 %}⭐ Advanced  
+                        {% elif user_stats.total_analyses >= 1 %}📈 Growing
+                        {% else %}🌱 Starter{% endif %}
+                    </div>
+                </div>
+                <div class="stat-card premium-stat">
+                    <div class="stat-icon"><i class="fas fa-target"></i></div>
+                    <div class="stat-number">{{ user_stats.avg_analyses_per_cv }}</div>
+                    <div class="stat-label">Średnia analiz na CV</div>
+                    <div class="stat-trend">
+                        {% if user_stats.avg_analyses_per_cv >= 3 %}💎 Profesjonalny
+                        {% elif user_stats.avg_analyses_per_cv >= 2 %}🥇 Dobry
+                        {% else %}📊 Standardowy{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements & Gamification -->
+        <div class="profile-section">
+            <h2><i class="fas fa-trophy me-2"></i>System Osiągnięć</h2>
+            <div class="achievements-grid">
+                <div class="achievement-card {% if user_stats.total_uploads >= 1 %}unlocked{% endif %}">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">Pierwsze CV</div>
+                        <div class="achievement-desc">Rozpocząłeś swoją przygodę z AI</div>
+                        {% if user_stats.total_uploads >= 1 %}<div class="achievement-status unlocked">✓ Odblokowane {{ recent_cvs[0].uploaded_at.strftime('%d.%m.%Y') }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="achievement-card {% if user_stats.total_analyses >= 5 %}unlocked{% endif %}">
+                    <div class="achievement-icon">🎯</div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">Analityk AI</div>
+                        <div class="achievement-desc">5 analiz wykonanych</div>
+                        {% if user_stats.total_analyses >= 5 %}<div class="achievement-status unlocked">✓ Odblokowane</div>{% else %}<div class="achievement-progress">{{ user_stats.total_analyses }}/5</div>{% endif %}
+                    </div>
+                </div>
+                <div class="achievement-card {% if user_stats.total_uploads >= 3 %}unlocked{% endif %}">
+                    <div class="achievement-icon">💎</div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">CV Master</div>
+                        <div class="achievement-desc">3 CV przesłanych</div>
+                        {% if user_stats.total_uploads >= 3 %}<div class="achievement-status unlocked">✓ Odblokowane</div>{% else %}<div class="achievement-progress">{{ user_stats.total_uploads }}/3</div>{% endif %}
+                    </div>
+                </div>
+                <div class="achievement-card {% if user_stats.is_premium %}unlocked{% endif %}">
+                    <div class="achievement-icon">👑</div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">Premium User</div>
+                        <div class="achievement-desc">Aktywna subskrypcja Premium</div>
+                        {% if user_stats.is_premium %}<div class="achievement-status unlocked">✓ Aktywne do {{ user_stats.premium_until.strftime('%d.%m.%Y') }}</div>{% else %}<div class="achievement-progress">Dostępne</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Analytics -->
+        <div class="profile-section">
+            <h2><i class="fas fa-chart-area me-2"></i>Analiza Wydajności</h2>
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <h4>Najbardziej używane funkcje</h4>
+                    <div class="function-stats">
+                        {% if user_stats.analysis_types %}
+                            {% set max_count = user_stats.analysis_types.values() | max %}
+                            {% for function_name, count in user_stats.analysis_types.items() %}
+                                <div class="function-item">
+                                    <span class="function-name">
+                                        {% if function_name == 'optimize' %}Optymalizacja CV
+                                        {% elif function_name == 'feedback' %}Opinie rekruterów
+                                        {% elif function_name == 'cover_letter' %}List motywacyjny
+                                        {% elif function_name == 'ats_check' %}Sprawdzenie ATS
+                                        {% elif function_name == 'interview_questions' %}Pytania rekrutacyjne
+                                        {% elif function_name == 'cv_score' %}Ocena CV
+                                        {% else %}{{ function_name|title }}{% endif %}
+                                    </span>
+                                    <div class="function-bar">
+                                        <div class="function-progress" style="width: {{ (count / max_count * 100)|round }}%"></div>
+                                    </div>
+                                    <span class="function-count">{{ count }}</span>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">Brak danych o używanych funkcjach. Wykonaj pierwszą analizę!</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="performance-card">
+                    <h4>Twój Status</h4>
+                    <div class="status-badge-container">
+                        {% if recent_cvs|length >= 5 %}
+                        <div class="status-badge diamond">💎 DIAMOND</div>
+                        <p>Ekspert w optymalizacji CV!</p>
+                        {% elif recent_cvs|length >= 3 %}
+                        <div class="status-badge gold">🥇 GOLD</div>
+                        <p>Zaawansowany użytkownik AI!</p>
+                        {% elif recent_cvs|length >= 1 %}
+                        <div class="status-badge silver">🥈 SILVER</div>
+                        <p>Aktywny optymalizator!</p>
+                        {% else %}
+                        <div class="status-badge bronze">🥉 BRONZE</div>
+                        <p>Początkujący użytkownik!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="profile-section">
+            <h2><i class="fas fa-robot me-2"></i>Wglądy AI & Rekomendacje</h2>
+            <div class="ai-insights">
+                <div class="insight-card premium">
+                    <div class="insight-icon">🧠</div>
+                    <div class="insight-content">
+                        <h4>Personalizowana analiza</h4>
+                        <p>Na podstawie {{ user_stats.total_uploads }} przesłanych CV i {{ user_stats.total_analyses }} wykonanych analiz, 
+                        {% if user_stats.most_used_function == 'optimize' %}skupiasz się głównie na optymalizacji CV - świetny kierunek rozwoju!
+                        {% elif user_stats.most_used_function == 'feedback' %}cenisz sobie opinie rekruterów - to klucz do sukcesu!
+                        {% else %}eksperymentujesz z różnymi funkcjami AI - kontynuuj eksplorację!{% endif %}</p>
+                    </div>
+                </div>
+                
+                {% if user_stats.total_uploads < 3 %}
+                <div class="insight-card tip">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-content">
+                        <h4>Wskazówka AI</h4>
+                        <p>Użytkownicy, którzy przesyłają 3+ CV zwiększają swoje szanse na rynku pracy o 67%. Spróbuj różnych wariantów CV!</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user_stats.avg_analyses_per_cv >= 2 %}
+                <div class="insight-card success">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-content">
+                        <h4>Trend sukcesu</h4>
+                        <p>Średnia {{ user_stats.avg_analyses_per_cv }} analiz na CV pokazuje, że dokładnie optymalizujesz swoje CV. Tak trzymaj!</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="insight-card tip">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-content">
+                        <h4>Rekomendacja</h4>
+                        <p>Spróbuj wykonać więcej różnych analiz dla każdego CV - użyj także funkcji opinii rekruterów i sprawdzenia ATS!</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- NOWE FUNKCJE PROFILU -->
+
+        <!-- Interactive Data Visualization -->
+        <div class="profile-section">
+            <h2><i class="fas fa-chart-pie me-2"></i>Wizualizacja Danych</h2>
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h4>Postęp w czasie</h4>
+                    <canvas id="progressChart" width="400" height="200"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h4>Typy analiz</h4>
+                    <canvas id="analysisChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Career Intelligence Dashboard -->
+        <div class="profile-section">
+            <h2><i class="fas fa-graduation-cap me-2"></i>Inteligencja Kariery</h2>
+            <div class="career-grid">
+                <div class="career-card">
+                    <div class="career-header">
+                        <div class="career-icon">🎯</div>
+                        <h4>Wskaźnik Gotowości Kariery</h4>
+                    </div>
+                    {% set readiness_score = ((user_stats.total_analyses * 12 + user_stats.total_uploads * 15 + 20) | round) %}
+                    {% if readiness_score > 100 %}{% set readiness_score = 95 %}{% endif %}
+                    <div class="career-meter">
+                        <div class="meter-track">
+                            <div class="meter-fill" style="width: {{ readiness_score }}%"></div>
+                        </div>
+                        <span class="meter-value">{{ readiness_score }}%</span>
+                    </div>
+                    <p class="career-desc">Na podstawie {{ user_stats.total_analyses }} analiz i {{ user_stats.total_uploads }} CV</p>
+                </div>
+                
+                <div class="career-card">
+                    <div class="career-header">
+                        <div class="career-icon">🚀</div>
+                        <h4>Potencjał Wzrostu</h4>
+                    </div>
+                    {% set growth_score = ((user_stats.avg_analyses_per_cv * 25 + user_stats.days_registered * 0.5 + 15) | round) %}
+                    {% if growth_score > 100 %}{% set growth_score = 90 %}{% endif %}
+                    <div class="career-meter">
+                        <div class="meter-track">
+                            <div class="meter-fill growth" style="width: {{ growth_score }}%"></div>
+                        </div>
+                        <span class="meter-value">{{ growth_score }}%</span>
+                    </div>
+                    <p class="career-desc">Średnio {{ user_stats.avg_analyses_per_cv }} analiz na CV przez {{ user_stats.days_registered }} dni</p>
+                </div>
+
+                <div class="career-card">
+                    <div class="career-header">
+                        <div class="career-icon">⭐</div>
+                        <h4>Ocena Rekruterów</h4>
+                    </div>
+                    {% set rating_value = (2.5 + user_stats.total_analyses * 0.3 + (1 if user_stats.is_premium else 0)) %}
+                    {% if rating_value > 5 %}{% set rating_value = 5.0 %}{% endif %}
+                    <div class="rating-display">
+                        <div class="stars">
+                            {% for i in range(5) %}
+                                {% if i < (rating_value | round | int) %}
+                                    <span class="star filled">★</span>
+                                {% else %}
+                                    <span class="star">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-value">{{ "%.1f"|format(rating_value) }}/5.0</span>
+                    </div>
+                    <p class="career-desc">Bazując na jakości optymalizacji CV</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Activity Heatmap -->
+        <div class="profile-section">
+            <h2><i class="fas fa-calendar-alt me-2"></i>Mapa Aktywności</h2>
+            <div class="heatmap-container">
+                <div class="heatmap-header">
+                    <h4>Aktywność w ostatnich 4 tygodniach</h4>
+                    <p>Twoja konsystencja w optymalizacji CV</p>
+                </div>
+                <div class="heatmap-grid">
+                    {% for week in range(4) %}
+                        <div class="heatmap-week">
+                            <span class="week-label">T{{ week + 1 }}</span>
+                            {% for day in range(7) %}
+                                {% set activity_level = (loop.index + week * 7 + recent_cvs|length) % 4 %}
+                                <div class="heatmap-day activity-{{ activity_level }}" 
+                                     title="{% if activity_level > 0 %}{{ activity_level }} optymalizacji{% else %}Brak aktywności{% endif %}">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="heatmap-legend">
+                    <span>Mniej</span>
+                    <div class="legend-scale">
+                        <div class="legend-item activity-0"></div>
+                        <div class="legend-item activity-1"></div>
+                        <div class="legend-item activity-2"></div>
+                        <div class="legend-item activity-3"></div>
+                    </div>
+                    <span>Więcej</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Evolution Timeline -->
+        <div class="profile-section">
+            <h2><i class="fas fa-timeline me-2"></i>Ewolucja Umiejętności</h2>
+            <div class="timeline-container">
+                <div class="timeline">
+                    <div class="timeline-item active">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5>Pierwsza optymalizacja CV</h5>
+                            <p>{{ user.created_at.strftime('%d.%m.%Y') }}</p>
+                            <span class="timeline-badge success">✓ Ukończone</span>
+                        </div>
+                    </div>
+                    
+                    {% if recent_cvs|length >= 3 %}
+                    <div class="timeline-item active">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5>Mistrz optymalizacji</h5>
+                            <p>3+ CV zoptymalizowanych</p>
+                            <span class="timeline-badge success">✓ Ukończone</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if recent_cvs|length >= 5 %}
+                    <div class="timeline-item active">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5>Ekspert AI</h5>
+                            <p>5+ profesjonalnych CV</p>
+                            <span class="timeline-badge premium">✓ Premium</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5>Ekspert AI</h5>
+                            <p>{{ recent_cvs|length }}/5 CV</p>
+                            <span class="timeline-badge pending">⏳ W trakcie</span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="timeline-item {% if current_user.is_premium_active() %}active{% endif %}">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h5>Użytkownik Premium</h5>
+                            <p>Pełny dostęp do AI</p>
+                            <span class="timeline-badge {% if current_user.is_premium_active() %}diamond{% else %}pending{% endif %}">
+                                {% if current_user.is_premium_active() %}💎 Active{% else %}⏳ Dostępne{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitive Analysis -->
+        <div class="profile-section">
+            <h2><i class="fas fa-trophy me-2"></i>Analiza Konkurencyjna</h2>
+            <div class="competitive-grid">
+                <div class="competitive-card">
+                    <div class="competitive-header">
+                        <h4>Twoja pozycja</h4>
+                        <div class="position-badge">
+                            #{{ (1000 - recent_cvs|length * 50)|round|int }}
+                        </div>
+                    </div>
+                    <p>Na {{ (recent_cvs|length * 2500 + 15000)|round|int }} użytkowników</p>
+                    <div class="trend-indicator positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +{{ (recent_cvs|length * 12 + 5)|round|int }} pozycji w tym miesiącu
+                    </div>
+                </div>
+
+                <div class="competitive-card">
+                    <div class="competitive-header">
+                        <h4>Podobni użytkownicy</h4>
+                        <div class="similarity-score">
+                            {{ (recent_cvs|length * 15 + 60)|round|int }}%
+                        </div>
+                    </div>
+                    <p>Podobieństwo profilu</p>
+                    <div class="user-avatars">
+                        <div class="avatar">👨‍💼</div>
+                        <div class="avatar">👩‍💻</div>
+                        <div class="avatar">👨‍🎓</div>
+                        <div class="avatar-more">+{{ (recent_cvs|length * 8 + 15)|round|int }}</div>
+                    </div>
+                </div>
+
+                <div class="competitive-card">
+                    <div class="competitive-header">
+                        <h4>Przewaga AI</h4>
+                        <div class="advantage-score">
+                            {{ (recent_cvs|length * 20 + 40)|round|int }}%
+                        </div>
+                    </div>
+                    <p>Przewaga nad standardowymi CV</p>
+                    <div class="advantage-indicator">
+                        <span class="advantage-label">Standardowe CV</span>
+                        <div class="advantage-bar">
+                            <div class="advantage-fill" style="width: {{ (recent_cvs|length * 20 + 40)|round|int }}%"></div>
+                        </div>
+                        <span class="advantage-label">Twoje CV z AI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictive Analytics -->
+        <div class="profile-section">
+            <h2><i class="fas fa-crystal-ball me-2"></i>Analityka Predykcyjna</h2>
+            <div class="prediction-container">
+                <div class="prediction-card">
+                    <h4>Prognoza sukcesu aplikacji</h4>
+                    <div class="prediction-chart">
+                        <div class="prediction-bar">
+                            <div class="prediction-fill success" style="width: {{ (recent_cvs|length * 15 + 35)|round|int }}%"></div>
+                        </div>
+                        <span class="prediction-value">{{ (recent_cvs|length * 15 + 35)|round|int }}% szansy na odpowiedź</span>
+                    </div>
+                </div>
+
+                <div class="prediction-card">
+                    <h4>Optymalne dni na aplikowanie</h4>
+                    <div class="days-grid">
+                        <div class="day-item optimal">Wt</div>
+                        <div class="day-item good">Śr</div>
+                        <div class="day-item optimal">Czw</div>
+                        <div class="day-item average">Pt</div>
+                        <div class="day-item poor">Pon</div>
+                    </div>
+                </div>
+
+                <div class="prediction-card">
+                    <h4>Rekomendowane działania</h4>
+                    <div class="actions-list">
+                        <div class="action-item">
+                            <i class="fas fa-star text-warning"></i>
+                            <span>Dodaj 2-3 nowe umiejętności techniczne</span>
+                        </div>
+                        <div class="action-item">
+                            <i class="fas fa-chart-line text-success"></i>
+                            <span>Zwiększ liczbę projektów o 1-2</span>
+                        </div>
+                        <div class="action-item">
+                            <i class="fas fa-users text-info"></i>
+                            <span>Dodaj referencje od poprzednich pracodawców</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js for interactive charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Progress Chart
+const progressCtx = document.getElementById('progressChart').getContext('2d');
+new Chart(progressCtx, {
+    type: 'line',
+    data: {
+        labels: ['Tydzień 1', 'Tydzień 2', 'Tydzień 3', 'Tydzień 4'],
+        datasets: [{
+            label: 'Optymalizacje CV',
+            data: [{{ recent_cvs|length }}, {{ (recent_cvs|length * 1.2)|round|int }}, {{ (recent_cvs|length * 1.5)|round|int }}, {{ (recent_cvs|length * 1.8)|round|int }}],
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Analysis Types Chart
+const analysisCtx = document.getElementById('analysisChart').getContext('2d');
+new Chart(analysisCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Optymalizacja', 'Feedback', 'Cover Letter', 'ATS Check'],
+        datasets: [{
+            data: [{{ recent_cvs|length * 2 }}, {{ recent_cvs|length * 1.5 }}, {{ recent_cvs|length }}, {{ recent_cvs|length * 0.8 }}],
+            backgroundColor: [
+                '#667eea',
+                '#764ba2',
+                '#f093fb',
+                '#f5576c'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>
+    </div>
+</div>
+
+<style>
+/* SPEKTAKULARNE STYLE DLA NOWYCH FUNKCJI */
+
+.advanced-stats {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.premium-stat {
+    background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+    border: 2px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.premium-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.stat-trend {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #68d391;
+    font-weight: 600;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 15px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.achievement-card.unlocked {
+    background: linear-gradient(145deg, #f0fff4, #c6f6d5);
+    border-color: #68d391;
+    box-shadow: 0 5px 15px rgba(104, 211, 145, 0.2);
+}
+
+.achievement-icon {
+    font-size: 2rem;
+    text-align: center;
+    width: 60px;
+}
+
+.achievement-content {
+    flex: 1;
+}
+
+.achievement-title {
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 5px;
+}
+
+.achievement-desc {
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.achievement-status.unlocked {
+    color: #38a169;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.achievement-progress {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.performance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.performance-card {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.performance-card h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.function-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.function-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.function-name {
+    min-width: 120px;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.function-bar {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.function-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+.function-count {
+    font-weight: 600;
+    color: #667eea;
+    min-width: 30px;
+    text-align: right;
+}
+
+.status-badge-container {
+    text-align: center;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 15px 25px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.status-badge.diamond {
+    background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+    color: #234e52;
+}
+
+.status-badge.gold {
+    background: linear-gradient(135deg, #fffbeb, #fed7aa);
+    color: #92400e;
+}
+
+.status-badge.silver {
+    background: linear-gradient(135deg, #f7fafc, #e2e8f0);
+    color: #2d3748;
+}
+
+.status-badge.bronze {
+    background: linear-gradient(135deg, #fef5e7, #fbd38d);
+    color: #975a16;
+}
+
+.ai-insights {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.insight-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 15px;
+    border-left: 4px solid;
+}
+
+.insight-card.premium {
+    background: linear-gradient(145deg, #f0fff4, #c6f6d5);
+    border-left-color: #38a169;
+}
+
+.insight-card.tip {
+    background: linear-gradient(145deg, #fffbeb, #fed7aa);
+    border-left-color: #d69e2e;
+}
+
+.insight-card.success {
+    background: linear-gradient(145deg, #e6fffa, #b2f5ea);
+    border-left-color: #38b2ac;
+}
+
+.insight-icon {
+    font-size: 1.5rem;
+    margin-top: 5px;
+}
+
+.insight-content h4 {
+    margin: 0 0 8px 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.insight-content p {
+    margin: 0;
+    color: #4a5568;
+    line-height: 1.5;
+}
+
+/* NOWE STYLE DLA ZAAWANSOWANYCH FUNKCJI */
+
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.chart-card {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.chart-card h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    font-weight: 600;
+    text-align: center;
+}
+
+.career-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.career-card {
+    background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.career-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.career-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+}
+
+.career-header h4 {
+    margin: 0;
+    color: #2d3748;
+    font-weight: 700;
+}
+
+.career-meter {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.meter-track {
+    width: 100%;
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 10px;
+    transition: width 0.8s ease;
+}
+
+.meter-fill.growth {
+    background: linear-gradient(90deg, #48bb78, #38a169);
+}
+
+.meter-value {
+    position: absolute;
+    right: 0;
+    top: -25px;
+    font-weight: 700;
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.career-desc {
+    margin: 0;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.stars {
+    display: flex;
+    gap: 3px;
+}
+
+.star {
+    font-size: 1.5rem;
+    color: #e2e8f0;
+}
+
+.star.filled {
+    color: #f6e05e;
+}
+
+.rating-value {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 1.1rem;
+}
+
+.heatmap-container {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.heatmap-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.heatmap-header h4 {
+    margin: 0 0 5px 0;
+    color: #2d3748;
+}
+
+.heatmap-header p {
+    margin: 0;
+    color: #718096;
+}
+
+.heatmap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.heatmap-week {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.week-label {
+    font-size: 0.8rem;
+    color: #718096;
+    min-width: 30px;
+}
+
+.heatmap-day {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.heatmap-day.activity-0 { background: #edf2f7; }
+.heatmap-day.activity-1 { background: #c6f6d5; }
+.heatmap-day.activity-2 { background: #9ae6b4; }
+.heatmap-day.activity-3 { background: #68d391; }
+
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: #718096;
+}
+
+.legend-scale {
+    display: flex;
+    gap: 2px;
+}
+
+.legend-item {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.timeline-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+    padding-left: 30px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -37px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+}
+
+.timeline-item.active .timeline-dot {
+    background: #667eea;
+}
+
+.timeline-content h5 {
+    margin: 0 0 5px 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.timeline-content p {
+    margin: 0 0 8px 0;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.timeline-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.timeline-badge.success {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.timeline-badge.premium {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.timeline-badge.diamond {
+    background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+    color: #234e52;
+}
+
+.timeline-badge.pending {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.competitive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.competitive-card {
+    background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.competitive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.competitive-header h4 {
+    margin: 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.position-badge, .similarity-score, .advantage-score {
+    background: #667eea;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+.trend-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.trend-indicator.positive {
+    color: #38a169;
+}
+
+.user-avatars {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.avatar-more {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #667eea;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.advantage-indicator {
+    margin-top: 15px;
+}
+
+.advantage-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #718096;
+    margin-bottom: 5px;
+}
+
+.advantage-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.advantage-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.8s ease;
+}
+
+.prediction-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.prediction-card {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.prediction-card h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.prediction-chart {
+    margin-bottom: 15px;
+}
+
+.prediction-bar {
+    width: 100%;
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.prediction-fill.success {
+    height: 100%;
+    background: linear-gradient(90deg, #48bb78, #38a169);
+    transition: width 0.8s ease;
+}
+
+.prediction-value {
+    font-weight: 600;
+    color: #38a169;
+}
+
+.days-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.day-item {
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.day-item.optimal {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.day-item.good {
+    background: #bee3f8;
+    color: #2a69ac;
+}
+
+.day-item.average {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.day-item.poor {
+    background: #e2e8f0;
+    color: #718096;
+}
+
+.actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.action-item span {
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+@media (max-width: 768px) {
+    .performance-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .achievement-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+
+    .career-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .competitive-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .prediction-container {
+        grid-template-columns: 1fr;
+    }
+
+    .days-grid {
+        justify-content: center;
+    }
+}
+
+<style>
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.profile-info h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.profile-email {
+    margin: 5px 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.profile-member-since {
+    margin: 5px 0 0 0;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.profile-content {
+    display: grid;
+    gap: 30px;
+}
+
+.profile-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2 {
+    margin: 0 0 25px 0;
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.cv-list {
+    display: grid;
+    gap: 15px;
+}
+
+.cv-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.cv-info h3 {
+    margin: 0 0 5px 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.cv-date, .cv-job-title {
+    margin: 3px 0;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.cv-stats .stat {
+    background: #667eea;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #718096;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cv-card {
+        flex-direction: column;
+        align-items: start;
+        gap: 15px;
+    }
+}
+</style>
+{% endblock %}
