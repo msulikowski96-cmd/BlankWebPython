@@ -403,17 +403,53 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Update status message and type
-        statusContainer.className = `alert alert-${type} mb-3`;
-        statusContainer.innerHTML = message;
+        // Update status message and type - make job analysis collapsible
+        if (message.includes('job-analysis-preview') || message.includes('Analiza Stanowiska')) {
+            statusContainer.className = `alert alert-${type} mb-3`;
+            statusContainer.innerHTML = createCollapsibleJobAnalysis(message);
+        } else {
+            statusContainer.className = `alert alert-${type} mb-3`;
+            statusContainer.innerHTML = message;
+        }
+        
         statusContainer.style.display = 'block';
 
-        // Auto-hide info messages after 5 seconds
-        if (type === 'info') {
+        // Auto-hide info messages after 8 seconds (longer for job analysis)
+        if (type === 'info' && !message.includes('Analiza Stanowiska')) {
             setTimeout(() => {
                 statusContainer.style.display = 'none';
-            }, 5000);
+            }, 8000);
         }
+    }
+
+    // Create collapsible job analysis
+    function createCollapsibleJobAnalysis(message) {
+        const collapseId = 'job-analysis-' + Date.now();
+        
+        return `
+            <div class="job-analysis-container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Analiza Stanowiska
+                    </h5>
+                    <button class="btn btn-sm btn-outline-light" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#${collapseId}"
+                            aria-expanded="false" 
+                            aria-controls="${collapseId}">
+                        <i class="fas fa-chevron-down collapse-icon"></i>
+                        <span class="ms-1">Pokaż szczegóły</span>
+                    </button>
+                </div>
+                <div class="collapse mt-3" id="${collapseId}">
+                    <div class="job-analysis-content">
+                        ${message.replace('<div class="job-analysis-preview">', '').replace('</div>', '')}
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     // Helper function to format plain text as HTML with proper CV formatting

@@ -16,7 +16,7 @@
                         Przesyłaj swoje CV i wybieraj spośród zaawansowanych opcji optymalizacji, 
                         aby zwiększyć swoje szanse na zdobycie wymarzonej pracy.
                     </p>
-                    
+
                     <div class="pricing-highlight">
                         <div class="pricing-card">
                             <div class="pricing-icon">
@@ -147,33 +147,46 @@
 <div class="row">
     <!-- Left Column: Upload and Job Input -->
     <div class="col-lg-5 mb-4">
-        <div class="ultra-modern-card floating-element mb-4">
-            <div class="card-header" style="background: var(--gradient-primary); border: none; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;">
-                <h3 class="mb-0 text-white"><i class="fas fa-rocket me-2"></i>Prześlij swoje CV</h3>
-            </div>
-            <div class="card-body" style="padding: 2rem;">
-                <form id="cv-upload-form" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="cv-file" class="form-label">Upload CV (PDF format)</label>
-                        <input type="file" class="form-control" id="cv-file" name="cv_file" accept=".pdf" required>
-                        <div class="form-text">Your CV will be processed securely and not stored permanently.</div>
-                    </div>
-                    <button type="submit" class="btn btn-ultra-modern w-100 neon-glow">
-                        <i class="fas fa-rocket me-2"></i>Prześlij CV
+        <!-- CV upload section -->
+        <div class="card cv-processing-card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <button class="btn btn-link text-white text-decoration-none p-0 w-100 text-start" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#cv-upload-collapse"
+                            aria-expanded="true" 
+                            aria-controls="cv-upload-collapse">
+                        <i class="fas fa-upload me-2"></i>Upload your CV (PDF)
+                        <i class="fas fa-chevron-down float-end mt-1 collapse-icon"></i>
                     </button>
-                </form>
-                
-                <div id="upload-success" class="alert alert-success mt-3" style="display: none;">
-                    <i class="fas fa-check-circle me-2"></i> CV uploaded successfully!
-                </div>
-                
-                <div id="upload-error" class="alert alert-danger mt-3" style="display: none;">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    <span id="error-message">Error uploading CV</span>
+                </h3>
+            </div>
+            <div class="collapse show" id="cv-upload-collapse">
+                <div class="card-body" style="padding: 2rem;">
+                    <form id="cv-upload-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="cv-file" class="form-label">Upload CV (PDF format)</label>
+                            <input type="file" class="form-control" id="cv-file" name="cv_file" accept=".pdf" required>
+                            <div class="form-text">Your CV will be processed securely and not stored permanently.</div>
+                        </div>
+                        <button type="submit" class="btn btn-ultra-modern w-100 neon-glow">
+                            <i class="fas fa-rocket me-2"></i>Prześlij CV
+                        </button>
+                    </form>
+
+                    <div id="upload-success" class="alert alert-success mt-3" style="display: none;">
+                        <i class="fas fa-check-circle me-2"></i> CV uploaded successfully!
+                    </div>
+
+                    <div id="upload-error" class="alert alert-danger mt-3" style="display: none;">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span id="error-message">Error uploading CV</span>
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="ultra-modern-card floating-element mb-4">
             <div class="card-header" style="background: var(--gradient-info); border: none; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;">
                 <h3 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informacje o pracy</h3>
@@ -184,12 +197,12 @@
                     <input type="text" class="form-control" id="job-title" placeholder="e.g. Senior Software Developer, Marketing Manager">
                     <div class="form-text">Required for position-specific optimization</div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="job-description" class="form-label">Job Description</label>
                     <textarea class="form-control" id="job-description" rows="6" placeholder="Paste the full job description here..."></textarea>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="job-url" class="form-label">OR Job URL (Optional)</label>
                     <input type="url" class="form-control" id="job-url" placeholder="https://example.com/job-posting">
@@ -197,129 +210,143 @@
                 </div>
             </div>
         </div>
-        
-        <div class="ultra-modern-card floating-element mb-4">
-            <div class="card-header" style="background: var(--gradient-success); border: none; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;">
-                <h3 class="mb-0 text-white"><i class="fas fa-magic me-2"></i>Opcje optymalizacji AI</h3>
+
+        <!-- Optimization Options -->
+        <div class="card cv-processing-card mb-4">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">
+                    <button class="btn btn-link text-white text-decoration-none p-0 w-100 text-start" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#optimization-collapse"
+                            aria-expanded="true" 
+                            aria-controls="optimization-collapse">
+                        <i class="fas fa-cogs me-2"></i>Choose Optimization Option
+                        <i class="fas fa-chevron-down float-end mt-1 collapse-icon"></i>
+                    </button>
+                </h3>
             </div>
-            <div class="card-body" style="padding: 2rem;">
-                <div class="list-group">
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="optimize" value="optimize" checked>
-                        <span>
-                            <strong>✅ Generate Improved CV</strong>
-                            <small class="d-block text-body-secondary">Optimize your CV for the target job position</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="feedback" value="feedback">
-                        <span>
-                            <strong>📋 AI Recruiter Feedback</strong>
-                            <small class="d-block text-body-secondary">Get detailed feedback as if from a real recruiter</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="cover_letter" value="cover_letter">
-                        <span>
-                            <strong>📝 Generate Cover Letter</strong>
-                            <small class="d-block text-body-secondary">Create a personalized cover letter for the job</small>
-                        </span>
-                    </label>
-                    
-                    
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="ats_check" value="ats_check">
-                        <span>
-                            <strong>🤖 ATS Compatibility Check</strong>
-                            <small class="d-block text-body-secondary">Analyze how well your CV will perform with ATS systems</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="interview_questions" value="interview_questions">
-                        <span>
-                            <strong>🎯 Generate Interview Questions</strong>
-                            <small class="d-block text-body-secondary">Get potential questions based on your CV</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="cv_score" value="cv_score">
-                        <span>
-                            <strong>📊 CV Score Analysis (1-100)</strong>
-                            <small class="d-block text-body-secondary">Get detailed scoring and improvement recommendations</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="keyword_analysis" value="keyword_analysis">
-                        <span>
-                            <strong>🔍 Keywords Match Analysis</strong>
-                            <small class="d-block text-body-secondary">Compare CV keywords with job requirements</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="grammar_check" value="grammar_check">
-                        <span>
-                            <strong>✏️ Grammar & Style Check</strong>
-                            <small class="d-block text-body-secondary">Professional language and style analysis</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="position_optimization" value="position_optimization">
-                        <span>
-                            <strong>🎯 Position-Specific Optimization</strong>
-                            <small class="d-block text-body-secondary">Tailor CV for specific job title/role</small>
-                        </span>
-                    </label>
-                    
-                    <label class="list-group-item d-flex gap-2">
-                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="interview_tips" value="interview_tips">
-                        <span>
-                            <strong>💡 Personalized Interview Tips</strong>
-                            <small class="d-block text-body-secondary">Get ready for your interview with custom advice</small>
-                        </span>
-                    </label>
-                </div>
-                
-                
-                
-                <button id="process-button" class="btn btn-success w-100 mt-3" disabled>
-                    <i class="fas fa-cogs me-2"></i>Process CV
-                </button>
-                
-                <div id="processing-indicator" class="text-center mt-3" style="display: none;">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+            <div class="collapse show" id="optimization-collapse">
+                <div class="card-body" style="padding: 2rem;">
+                    <div class="list-group">
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="optimize" value="optimize" checked>
+                            <span>
+                                <strong>✅ Generate Improved CV</strong>
+                                <small class="d-block text-body-secondary">Optimize your CV for the target job position</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="feedback" value="feedback">
+                            <span>
+                                <strong>📋 AI Recruiter Feedback</strong>
+                                <small class="d-block text-body-secondary">Get detailed feedback as if from a real recruiter</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="cover_letter" value="cover_letter">
+                            <span>
+                                <strong>📝 Generate Cover Letter</strong>
+                                <small class="d-block text-body-secondary">Create a personalized cover letter for the job</small>
+                            </span>
+                        </label>
+
+
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="ats_check" value="ats_check">
+                            <span>
+                                <strong>🤖 ATS Compatibility Check</strong>
+                                <small class="d-block text-body-secondary">Analyze how well your CV will perform with ATS systems</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="interview_questions" value="interview_questions">
+                            <span>
+                                <strong>🎯 Generate Interview Questions</strong>
+                                <small class="d-block text-body-secondary">Get potential questions based on your CV</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="cv_score" value="cv_score">
+                            <span>
+                                <strong>📊 CV Score Analysis (1-100)</strong>
+                                <small class="d-block text-body-secondary">Get detailed scoring and improvement recommendations</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="keyword_analysis" value="keyword_analysis">
+                            <span>
+                                <strong>🔍 Keywords Match Analysis</strong>
+                                <small class="d-block text-body-secondary">Compare CV keywords with job requirements</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="grammar_check" value="grammar_check">
+                            <span>
+                                <strong>✏️ Grammar & Style Check</strong>
+                                <small class="d-block text-body-secondary">Professional language and style analysis</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="position_optimization" value="position_optimization">
+                            <span>
+                                <strong>🎯 Position-Specific Optimization</strong>
+                                <small class="d-block text-body-secondary">Tailor CV for specific job title/role</small>
+                            </span>
+                        </label>
+
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="interview_tips" value="interview_tips">
+                            <span>
+                                <strong>💡 Personalized Interview Tips</strong>
+                                <small class="d-block text-body-secondary">Get ready for your interview with custom advice</small>
+                            </span>
+                        </label>
                     </div>
-                    <p class="mt-2">Processing your request with AI. This may take up to a minute...</p>
+
+
+
+                    <button id="process-button" class="btn btn-success w-100 mt-3" disabled>
+                        <i class="fas fa-cogs me-2"></i>Process CV
+                    </button>
+
+                    <div id="processing-indicator" class="text-center mt-3" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Processing your request with AI. This may take up to a minute...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Right Column: CV Text and Results -->
     <div class="col-lg-7 mb-4">
-        <div class="card mb-4">
-            <div class="card-header bg-secondary text-white">
-                <button class="btn btn-link text-white text-decoration-none p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#cv-text-section" aria-expanded="false" aria-controls="cv-text-section">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="mb-0"><i class="fas fa-file-alt me-2"></i>Twój tekst CV</h3>
-                        <div class="d-flex align-items-center">
-                            <button id="edit-cv-btn" class="btn btn-outline-light btn-sm me-2" disabled onclick="event.stopPropagation();">
-                                <i class="fas fa-edit me-1"></i>Edytuj
-                            </button>
-                            <i class="fas fa-chevron-down collapse-icon"></i>
-                        </div>
-                    </div>
-                </button>
+        <!-- CV Preview Section -->
+        <div class="card cv-processing-card mb-4" id="results-section" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">
+                    <button class="btn btn-link text-white text-decoration-none p-0 w-100 text-start" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#cv-preview-collapse"
+                            aria-expanded="true" 
+                            aria-controls="cv-preview-collapse">
+                        <i class="fas fa-eye me-2"></i>CV Preview & Editor
+                        <i class="fas fa-chevron-down float-end mt-1 collapse-icon"></i>
+                    </button>
+                </h3>
             </div>
-            <div class="collapse" id="cv-text-section">
+            <div class="collapse show" id="cv-preview-collapse">
                 <div class="card-body">
                     <div class="collapse-info mb-3">
                         <p class="text-muted mb-2">
@@ -358,21 +385,34 @@
             </script>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                <h3 class="mb-0"><i class="fas fa-lightbulb me-2"></i>AI Results</h3>
-                <div>
-                    <button id="compare-versions-btn" class="btn btn-outline-light btn-sm me-2" disabled>
-                        <i class="fas fa-columns me-1"></i>Compare
+        <!-- Results Section -->
+        <div class="card cv-processing-card">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="mb-0">
+                    <button class="btn btn-link text-white text-decoration-none p-0 w-100 text-start" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#results-collapse"
+                            aria-expanded="true" 
+                            aria-controls="results-collapse">
+                        <i class="fas fa-star me-2"></i>Optimized Results
+                        <i class="fas fa-chevron-down float-end mt-1 collapse-icon"></i>
                     </button>
-                    <button id="copy-result-btn" class="btn btn-outline-light btn-sm" disabled>
-                        <i class="fas fa-copy me-1"></i>Copy
-                    </button>
-                </div>
+                </h3>
             </div>
-            <div class="card-body">
-                <div id="result-container">
-                    <p class="text-muted text-center">Process your CV to see AI-generated results here</p>
+            <div class="collapse show" id="results-collapse">
+                <div class="card-body">
+                    <div id="result-container">
+                        <p class="text-muted text-center">Process your CV to see AI-generated results here</p>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button id="compare-versions-btn" class="btn btn-outline-primary btn-sm" disabled>
+                            <i class="fas fa-columns me-1"></i>Compare Versions
+                        </button>
+                        <button id="copy-result-btn" class="btn btn-primary btn-sm" disabled>
+                            <i class="fas fa-copy me-1"></i>Copy Result
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
