@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
     login_count = db.Column(db.Integer, default=0)
-    active = db.Column(db.Boolean, default=True, nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
     premium_until = db.Column(db.DateTime)
     stripe_customer_id = db.Column(db.String(100))
     stripe_session_id = db.Column(db.String(200))
@@ -77,10 +77,6 @@ class User(UserMixin, db.Model):
         """Check if user is developer"""
         return self.username == 'developer'
     
-    @property
-    def is_active(self):
-        """Override UserMixin is_active property"""
-        return self.active
     
     def to_dict(self):
         """Convert user to dictionary"""
