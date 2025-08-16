@@ -60,7 +60,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                // Check if we were redirected to login
+                if (response.redirected && response.url.includes('/login')) {
+                    throw new Error('You must be logged in to upload CV. Please log in first.');
+                }
+                
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     // Store the CV text
@@ -89,7 +101,15 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                showError('Failed to upload CV. Please try again.');
+                if (error.message.includes('logged in')) {
+                    showError('You must be logged in to upload CV. Please log in first.');
+                    // Optionally redirect to login
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    showError(error.message || 'Failed to upload CV. Please try again.');
+                }
             })
             .finally(() => {
                 // Re-enable the file input
