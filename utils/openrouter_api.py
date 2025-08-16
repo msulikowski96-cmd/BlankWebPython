@@ -52,7 +52,14 @@ DEEP_REASONING_PROMPT = """Jesteś światowej klasy ekspertem w rekrutacji i opt
 - Konkretne, praktyczne rady
 - Zawsze uzasadniaj swoje rekomendacje
 - Używaj profesjonalnej terminologii HR
-- Bądź szczery ale konstruktywny w krytyce"""
+- Bądź szczery ale konstruktywny w krytyce
+
+🚨 ABSOLUTNY ZAKAZ FAŁSZOWANIA DANYCH:
+- NIE WOLNO dodawać firm, stanowisk, dat, które nie są w oryginalnym CV
+- NIE WOLNO wymyślać osiągnięć, projektów, umiejętności
+- NIE WOLNO zmieniać faktów z CV kandydata
+- MOŻNA TYLKO lepiej sformułować istniejące prawdziwe informacje
+- Każda wymyślona informacja niszczy wiarygodność kandydata"""
 
 headers = {
     "Content-Type": "application/json",
@@ -70,8 +77,8 @@ def send_api_request(prompt, max_tokens=2000, language='pl', user_tier='free', t
 
     # Language-specific system prompts
     language_prompts = {
-        'pl': "Jesteś ekspertem w optymalizacji CV i doradcą kariery. ZAWSZE odpowiadaj w języku polskim, niezależnie od języka CV lub opisu pracy. Używaj polskiej terminologii HR i poprawnej polszczyzny.",
-        'en': "You are an expert resume editor and career advisor. ALWAYS respond in English, regardless of the language of the CV or job description. Use proper English HR terminology and grammar."
+        'pl': "Jesteś ekspertem w optymalizacji CV i doradcą kariery. ZAWSZE odpowiadaj w języku polskim, niezależnie od języka CV lub opisu pracy. Używaj polskiej terminologii HR i poprawnej polszczyzny. KRYTYCZNE: NIE DODAWAJ żadnych nowych firm, stanowisk, dat ani osiągnięć które nie są w oryginalnym CV - to oszukiwanie kandydata!",
+        'en': "You are an expert resume editor and career advisor. ALWAYS respond in English, regardless of the language of the CV or job description. Use proper English HR terminology and grammar. CRITICAL: DO NOT ADD any new companies, positions, dates or achievements that are not in the original CV - this is deceiving the candidate!"
     }
 
     system_prompt = get_enhanced_system_prompt(task_type, language) + "\n" + language_prompts.get(language, language_prompts['pl'])
@@ -83,8 +90,8 @@ def send_api_request(prompt, max_tokens=2000, language='pl', user_tier='free', t
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,
-        "temperature": 0.8,
-        "top_p": 0.95,
+        "temperature": 0.3,
+        "top_p": 0.85,
         "frequency_penalty": 0.1,
         "presence_penalty": 0.1,
         "metadata": {
@@ -467,45 +474,34 @@ def optimize_cv_for_specific_position(cv_text, target_position, job_description,
     pod kątem konkretnego stanowiska docelowego, zachowując pełną autentyczność danych
     """
     prompt = f"""
-    ZADANIE EKSPERCKIE: Przeprowadź zaawansowaną analizę CV i stwórz precyzyjną optymalizację pod konkretne polskie stanowisko pracy.
+    ZADANIE: Przepisz to CV używając WYŁĄCZNIE faktów z oryginalnego tekstu. NIE DODAWAJ, NIE WYMYŚLAJ, NIE TWÓRZ nowych informacji.
 
-    ⚠️ ABSOLUTNE ZASADY BEZPIECZEŃSTWA:
-    1. ❌ ZAKAZ WYMYŚLANIA: Używaj WYŁĄCZNIE faktów z oryginalnego CV
-    2. ❌ ZAKAZ DODAWANIA: Nie twórz nowych firm, dat, projektów, osiągnięć
-    3. ✅ INTELIGENTNE PRZEPISYWANIE: Przemyślnie sformułuj istniejące doświadczenia
-    4. ✅ KONTEKSTOWE DOPASOWANIE: Podkreśl aspekty każdego stanowiska, które są relevant dla celu
-    5. ✅ POLSKI RYNEK PRACY: Dostosuj terminologię do polskich standardów HR
-    6. ✅ UNIKALNE OPISY: Jeśli w CV są podobne stanowiska (np. "Kurier" w różnych firmach), stwórz RÓŻNE opisy dla każdego z nich
+    ⚠️ KRYTYCZNE ZASADY - MUSZĄ BYĆ BEZWZGLĘDNIE PRZESTRZEGANE:
+    1. ❌ ABSOLUTNY ZAKAZ: NIE wolno dodawać żadnych nowych firm, stanowisk, dat, osiągnięć, umiejętności
+    2. ❌ ABSOLUTNY ZAKAZ: NIE wolno zmieniac dat zatrudnienia, nazw firm, tytułów stanowisk
+    3. ❌ ABSOLUTNY ZAKAZ: NIE wolno dodawać obowiązków które nie są w oryginalnym CV
+    4. ✅ DOZWOLONE: Tylko lepsze sformułowanie istniejących opisów używając lepszych słów
+    5. ✅ DOZWOLONE: Reorganizacja kolejności sekcji dla lepszej prezentacji
+    6. ✅ DOZWOLONE: Użycie synonimów i lepszej terminologii branżowej
 
-    🎯 STANOWISKO DOCELOWE: {target_position}
-    🏢 FIRMA DOCELOWA: {company_name}
-    📋 OPIS STANOWISKA:
+    STANOWISKO DOCELOWE: {target_position}
+    FIRMA DOCELOWA: {company_name}
+    WYMAGANIA Z OGŁOSZENIA:
     {job_description}
 
-    ORYGINALNE CV DO ANALIZY:
+    ORYGINALNE CV (UŻYWAJ TYLKO TYCH FAKTÓW):
     {cv_text}
 
-    WYGENERUJ ZAAWANSOWANE CV WEDŁUG SCHEMATU:
+    PRZEPISZ CV zachowując wszystkie oryginalne fakty, ale lepiej je prezentując. Odpowiedź w formacie JSON:
 
     {{
-        "position_analysis": {{
-            "target_role": "{target_position}",
-            "key_requirements_identified": ["requirement1", "requirement2", "requirement3"],
-            "transferable_skills_found": ["skill1", "skill2", "skill3"],
-            "positioning_strategy": "Jak pozycjonujemy kandydata"
-        }},
-        "optimized_cv": "KOMPLETNE ZOPTYMALIZOWANE CV gotowe do wysłania",
-        "keyword_optimization": {{
-            "primary_keywords": ["kluczowe słowo1", "kluczowe słowo2"],
-            "secondary_keywords": ["dodatkowe słowo1", "dodatkowe słowo2"],
-            "keyword_density_score": "[0-100]"
-        }},
-        "improvement_summary": {{
-            "before_vs_after": "Podsumowanie zmian",
-            "match_percentage": "[0-100]",
-            "success_probability": "Szanse powodzenia aplikacji"
-        }}
+        "optimized_cv": "Przepisane CV z lepszym sformułowaniem, ale tymi samymi faktami",
+        "changes_made": ["Lista rzeczywistych zmian - tylko stylistycznych"],
+        "preserved_facts": ["Lista zachowanych oryginalnych faktów"],
+        "warning_check": "Potwierdzam że nie dodałem żadnych nowych faktów, firm ani stanowisk"
     }}
+
+    PAMIĘTAJ: Jeśli dodasz choćby jeden wymyślony szczegół, naruszysz zaufanie kandydata!
     """
 
     max_tokens = 8000 if is_premium or payment_verified else 4000
@@ -1083,7 +1079,8 @@ def get_enhanced_system_prompt(task_type, language='pl'):
 - Znasz najnowsze trendy w formatowaniu CV
 - Potrafisz dostosować styl do różnych branż i stanowisk
 - Maksymalizujesz szanse przejścia przez filtry ATS
-- Tworzysz przekonujące narracje kariery zawodowej""",
+- Przepisujesz istniejące doświadczenia używając faktów z CV
+- PAMIĘTAJ: Tylko poprawiaj sformułowania, NIE dodawaj nowych firm, stanowisk, dat!""",
 
         'recruiter_feedback': """
 
