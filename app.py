@@ -76,8 +76,8 @@ app = Flask(__name__)
 app.config.update(
     SECRET_KEY=os.environ.get("SECRET_KEY", "dev-super-secret-key-fallback"),
     SESSION_SECRET=os.environ.get("SESSION_SECRET", os.environ.get("SECRET_KEY", "dev-super-secret-key-fallback")),
-    FLASK_ENV=os.environ.get("FLASK_ENV", "development"),
-    DEBUG=os.environ.get("DEBUG", "True").lower() == "true",
+    FLASK_ENV=os.environ.get("FLASK_ENV", "production"),
+    DEBUG=os.environ.get("DEBUG", "False").lower() == "true",
     PORT=int(os.environ.get("PORT", 5000)),
     MAX_CONTENT_LENGTH=int(os.environ.get("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)),
 )
@@ -86,7 +86,7 @@ app.secret_key = app.config["SECRET_KEY"]
 
 # Enhanced session security with size optimization
 app.config.update(
-    SESSION_COOKIE_SECURE=False,  # Set to True only in production with HTTPS
+    SESSION_COOKIE_SECURE=os.environ.get("FLASK_ENV", "production") == "production",  # True in production with HTTPS
     SESSION_COOKIE_HTTPONLY=True,  # No JavaScript access
     SESSION_COOKIE_SAMESITE='Lax',  # CSRF protection
     PERMANENT_SESSION_LIFETIME=timedelta(hours=24),  # Session timeout
@@ -1833,12 +1833,8 @@ def check_configuration():
     print("="*60 + "\n")
     return True
 
-if __name__ == '__main__':
-    # Sprawdź konfigurację przed startem
-    if not check_configuration():
-        print("⚠️ Aplikacja może nie działać poprawnie bez kompletnej konfiguracji")
-        print("🔧 Zaktualizuj plik .env z prawidłowymi wartościami")
-    
+def initialize_app():
+    """Initialize application database and users"""
     with app.app_context():
         # Create all database tables
         db.create_all()
@@ -1856,35 +1852,29 @@ if __name__ == '__main__':
             db.session.add(dev_user)
             db.session.commit()
             print("✅ NEW Developer account created successfully!")
-            print("🔑 Username: developer")
-            print("🔑 Password: NewDev2024!")
-            print("📧 Email: dev@cvoptimizer.pro")
         else:
             print("✅ Developer account already exists")
-            # Force password reset for developer
-            dev_user.set_password('NewDev2024!')
-            dev_user.is_active = True
-            db.session.commit()
-            print("🔄 Developer password reset to: NewDev2024!")
-            print("🔑 Username: developer")
-            print("🔑 Password: NewDev2024!")
-            print("📧 Email: dev@cvoptimizer.pro")
-            print(f"🔍 Account active: {dev_user.is_active}")
-            print(f"🔍 Password hash exists: {bool(dev_user.password_hash)}")
 
-            # Test password verification
-            test_password = 'NewDev2024!'
-            password_valid = dev_user.check_password(test_password)
-            print(f"🔍 Password validation test: {password_valid}")
+# Initialize app when imported (for production)
+if os.environ.get('FLASK_ENV') == 'production':
+    initialize_app()
+
+if __name__ == '__main__':
+    # Sprawdź konfigurację przed startem
+    if not check_configuration():
+        print("⚠️ Aplikacja może nie działać poprawnie bez kompletnej konfiguracji")
+        print("🔧 Zaktualizuj plik .env z prawidłowymi wartościami")
+    
+    # Initialize for development
+    if os.environ.get('FLASK_ENV') != 'production':
+        initialize_app()
 
     # Replit używa PORT, lokalnie fallback na 5000
     port = int(os.environ.get('PORT', 5000))
 
     # Log startup info
     print(f"🚀 Starting CV Optimizer Pro on 0.0.0.0:{port}")
-    print(
-        f"📱 Access your app at: https://{os.environ.get('REPL_SLUG', 'your-repl')}.{os.environ.get('REPL_OWNER', 'username')}.repl.co"
-    )
-
-    # Ensure proper binding for Replit
-    app.run(host='0.0.0.0', port=port, debug=False, threaded=True)
+    
+    # Ensure proper binding
+    debug_mode = os.environ.get("DEBUG", "False").lower() == "true"
+    app.run(host='0.0.0.0', port=port, debug=debug_mode, threaded=True)
