@@ -97,11 +97,11 @@ app.config.update(
 # Database configuration
 database_url = os.environ.get('DATABASE_URL')
 if not database_url:
-    # Fallback to SQLite for development - use absolute path for Replit
+    # Fallback to SQLite for development - use writable temp directory
     import tempfile
-    db_dir = os.path.join(os.getcwd(), 'database')
-    os.makedirs(db_dir, exist_ok=True)
-    database_url = f'sqlite:///{os.path.join(db_dir, "cv_optimizer.db")}'
+    # Use /tmp directory which is always writable in Replit
+    db_path = '/tmp/cv_optimizer.db'
+    database_url = f'sqlite:///{db_path}'
     logger.warning(f"Using SQLite database: {database_url}")
 
 # Fix for PostgreSQL URL compatibility
