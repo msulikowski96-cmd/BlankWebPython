@@ -4,8 +4,35 @@ from tempfile import mkdtemp
 from dotenv import load_dotenv
 from collections import defaultdict
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file - with override
+load_dotenv(override=True)
+
+# Verify critical environment variables are loaded
+def verify_env_vars():
+    """Verify that all critical environment variables are loaded"""
+    critical_vars = [
+        'OPENROUTER_API_KEY',
+        'STRIPE_SECRET_KEY', 
+        'SECRET_KEY',
+        'DATABASE_URL'
+    ]
+    
+    missing_vars = []
+    for var in critical_vars:
+        value = os.environ.get(var)
+        if not value or value.startswith('TWÓJ_') or len(value.strip()) < 10:
+            missing_vars.append(var)
+    
+    if missing_vars:
+        print(f"❌ BŁĄD: Brakujące lub niepoprawne zmienne środowiskowe: {missing_vars}")
+        print("🔧 Sprawdź plik .env i ustaw prawdziwe wartości!")
+        return False
+    
+    print("✅ Wszystkie krytyczne zmienne środowiskowe są ustawione")
+    return True
+
+# Verify environment on startup
+env_check_passed = verify_env_vars()
 
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for
@@ -44,8 +71,18 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET",
-                                "dev-super-secret-key-for-sessions-12345")
+
+# Load all configuration from environment variables
+app.config.update(
+    SECRET_KEY=os.environ.get("SECRET_KEY", "dev-super-secret-key-fallback"),
+    SESSION_SECRET=os.environ.get("SESSION_SECRET", os.environ.get("SECRET_KEY", "dev-super-secret-key-fallback")),
+    FLASK_ENV=os.environ.get("FLASK_ENV", "development"),
+    DEBUG=os.environ.get("DEBUG", "True").lower() == "true",
+    PORT=int(os.environ.get("PORT", 5000)),
+    MAX_CONTENT_LENGTH=int(os.environ.get("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)),
+)
+
+app.secret_key = app.config["SECRET_KEY"]
 
 # Enhanced session security with size optimization
 app.config.update(
@@ -111,14 +148,24 @@ def load_user(user_id):
 
 # Session management functions removed - using standard Flask-Login
 
-# Stripe configuration
+# Stripe configuration - ładowanie z .env
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
-# Configuration for file uploads
-UPLOAD_FOLDER = mkdtemp()
+# Verify Stripe configuration
+if not stripe.api_key or len(stripe.api_key) < 20:
+    logger.warning("⚠️ STRIPE_SECRET_KEY nie jest poprawnie ustawiony w .env")
+else:
+    logger.info("✅ Stripe API key załadowany poprawnie")
+
+# Configuration for file uploads - z zmiennych środowiskowych
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', mkdtemp())
 ALLOWED_EXTENSIONS = {'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['MAX_CONTENT_LENGTH'] = int(os.environ.get('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))
+
+# Create upload folder if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+logger.info(f"📁 Upload folder: {UPLOAD_FOLDER}")
 
 
 def allowed_file(filename):
@@ -1758,7 +1805,40 @@ def analyze_job_posting():
         }), 500
 
 
+def check_configuration():
+    """Sprawdź kompletną konfigurację aplikacji"""
+    print("\n" + "="*60)
+    print("🔧 SPRAWDZANIE KONFIGURACJI CV OPTIMIZER PRO")
+    print("="*60)
+    
+    # Sprawdź zmienne środowiskowe
+    config_status = {
+        'OPENROUTER_API_KEY': bool(os.environ.get('OPENROUTER_API_KEY', '').strip() and 
+                                  not os.environ.get('OPENROUTER_API_KEY', '').startswith('TWÓJ_')),
+        'STRIPE_SECRET_KEY': bool(os.environ.get('STRIPE_SECRET_KEY', '').strip()),
+        'SECRET_KEY': bool(os.environ.get('SECRET_KEY', '').strip()),
+        'DATABASE_URL': bool(os.environ.get('DATABASE_URL', '').strip()),
+    }
+    
+    for key, status in config_status.items():
+        status_icon = "✅" if status else "❌"
+        print(f"{status_icon} {key}: {'OK' if status else 'BRAK/NIEPOPRAWNY'}")
+    
+    if not all(config_status.values()):
+        print("\n❌ KONFIGURACJA NIEKOMPLETNA!")
+        print("🔧 Sprawdź plik .env i ustaw wszystkie wymagane zmienne")
+        return False
+    
+    print("\n✅ KONFIGURACJA KOMPLETNA!")
+    print("="*60 + "\n")
+    return True
+
 if __name__ == '__main__':
+    # Sprawdź konfigurację przed startem
+    if not check_configuration():
+        print("⚠️ Aplikacja może nie działać poprawnie bez kompletnej konfiguracji")
+        print("🔧 Zaktualizuj plik .env z prawidłowymi wartościami")
+    
     with app.app_context():
         # Create all database tables
         db.create_all()

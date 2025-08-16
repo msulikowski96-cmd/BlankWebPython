@@ -6,18 +6,33 @@ import urllib.parse
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file with override
+load_dotenv(override=True)
 
 logger = logging.getLogger(__name__)
 
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+# Load and validate OpenRouter API key
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
-# Debug logging for API key
-if OPENROUTER_API_KEY:
-    logger.debug(f"OpenRouter API key loaded successfully (length: {len(OPENROUTER_API_KEY)})")
-else:
-    logger.error("OpenRouter API key is empty or not found in environment variables")
+# Validate API key format and content
+def validate_api_key():
+    if not OPENROUTER_API_KEY:
+        logger.error("❌ OPENROUTER_API_KEY nie jest ustawiony w pliku .env")
+        return False
+    
+    if OPENROUTER_API_KEY.startswith('TWÓJ_') or len(OPENROUTER_API_KEY) < 20:
+        logger.error("❌ OPENROUTER_API_KEY w .env zawiera przykładową wartość - ustaw prawdziwy klucz!")
+        return False
+    
+    if not OPENROUTER_API_KEY.startswith('sk-or-v1-'):
+        logger.error("❌ OPENROUTER_API_KEY nie ma poprawnego formatu (powinien zaczynać się od 'sk-or-v1-')")
+        return False
+    
+    logger.info(f"✅ OpenRouter API key załadowany poprawnie (długość: {len(OPENROUTER_API_KEY)})")
+    return True
+
+# Validate on module import
+API_KEY_VALID = validate_api_key()
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "qwen/qwen-2.5-72b-instruct:free"
@@ -75,9 +90,10 @@ def send_api_request(prompt, max_tokens=2000, language='pl', user_tier='free', t
     """
     Send a request to the OpenRouter API with enhanced configuration
     """
-    if not OPENROUTER_API_KEY:
-        logger.error("OpenRouter API key not found")
-        raise ValueError("OpenRouter API key not set in environment variables")
+    if not OPENROUTER_API_KEY or not API_KEY_VALID:
+        error_msg = "OpenRouter API key nie jest poprawnie skonfigurowany w pliku .env"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
 
     # Language-specific system prompts
     language_prompts = {
